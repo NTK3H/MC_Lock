@@ -2,24 +2,24 @@
 #include <string.h>
 #include <assert.h>
 
-/* Õâ¸öÎÄ¼şÓÃÓÚ¹¹½¨Ä§·½Ä£ĞÍ²¢½øĞĞ»ù´¡µÄĞı×ª
- * Æä½Ó¿ÚÎªÁ½¸öº¯Êı,·Ö±ğÊÇEdgeChangeºÍMidChange
- * ËüÃÇ·Ö±ğÓÃ×ö±íÃæĞı×ªºÍÖĞ¼äĞı×ª
- * ´ËÎÄ¼şÄÚÆäËüµÄº¯Êı²»¿Éµ¥¶ÀÊ¹ÓÃ,·ñÔò½«ÎŞ·¨´ïµ½Ğ§¹û
+/* è¿™ä¸ªæ–‡ä»¶ç”¨äºæ„å»ºé­”æ–¹æ¨¡å‹å¹¶è¿›è¡ŒåŸºç¡€çš„æ—‹è½¬
+ * å…¶æ¥å£ä¸ºä¸¤ä¸ªå‡½æ•°,åˆ†åˆ«æ˜¯EdgeChangeå’ŒMidChange
+ * å®ƒä»¬åˆ†åˆ«ç”¨åšè¡¨é¢æ—‹è½¬å’Œä¸­é—´æ—‹è½¬
+ * æ­¤æ–‡ä»¶å†…å…¶å®ƒçš„å‡½æ•°ä¸å¯å•ç‹¬ä½¿ç”¨,å¦åˆ™å°†æ— æ³•è¾¾åˆ°æ•ˆæœ
  *
- * ***£¡´ËÎÄ¼şÄÚËùÓĞº¯Êı¾ùÕıÈ·ÇÒÓĞĞ§,²»Ó¦ÔÙĞŞ¸ÄÈÎºÎ¶«Î÷£¡***
+ * ***ï¼æ­¤æ–‡ä»¶å†…æ‰€æœ‰å‡½æ•°å‡æ­£ç¡®ä¸”æœ‰æ•ˆ,ä¸åº”å†ä¿®æ”¹ä»»ä½•ä¸œè¥¿ï¼***
  *
- * ĞŞ¸ÄÈÕÖ¾:
- * 1.Ôö¼Óswap,anticlockwiseºÍclockwiseº¯Êı²¢¶¨Òå½á¹¹Ìåmc
- * 2.Ôö¼ÓUpOrDownºÍLeftOrRightº¯Êı
- * 3.Ôö¼ÓContraryArrº¯ÊıºÍMCRoundº¯Êı
- * 4.ĞŞ¸´UpOrDownºÍLeftOrRightº¯ÊıµÄBUG
- * 5.ĞŞ¸´MCRoundµÄBUG²¢Ìí¼ÓÁËÌØÊâĞı×ª¹¦ÄÜ
- * 6.Ìí¼ÓEdgeChangeº¯Êı
- * 7.Ìí¼ÓMidChangeº¯Êı
- * 8.É¾³ıLeftOrRightº¯Êı
+ * ä¿®æ”¹æ—¥å¿—:
+ * 1.å¢åŠ swap,anticlockwiseå’Œclockwiseå‡½æ•°å¹¶å®šä¹‰ç»“æ„ä½“mc
+ * 2.å¢åŠ UpOrDownå’ŒLeftOrRightå‡½æ•°
+ * 3.å¢åŠ ContraryArrå‡½æ•°å’ŒMCRoundå‡½æ•°
+ * 4.ä¿®å¤UpOrDownå’ŒLeftOrRightå‡½æ•°çš„BUG
+ * 5.ä¿®å¤MCRoundçš„BUGå¹¶æ·»åŠ äº†ç‰¹æ®Šæ—‹è½¬åŠŸèƒ½
+ * 6.æ·»åŠ EdgeChangeå‡½æ•°
+ * 7.æ·»åŠ MidChangeå‡½æ•°
+ * 8.åˆ é™¤LeftOrRightå‡½æ•°
  * 
- * ½üÆÚĞŞ¸ÄÊ±¼ä: 2018/15/17 12:32
+ * è¿‘æœŸä¿®æ”¹æ—¶é—´: 2018/15/17 12:32
  */
 
 typedef struct Magic_Cube{
@@ -44,7 +44,7 @@ static void swap(char *x, char *y)
 	*y = z;
 }
 
-//ÄæÊ±Õë
+//é€†æ—¶é’ˆ
 static void anticlockwise(char *cArr,int n)
 {
 	for(int i=0; i<n; ++i)
@@ -56,7 +56,7 @@ static void anticlockwise(char *cArr,int n)
 			swap(&cArr[n*i+j], &cArr[n*(n-1-i)+j]);
 }
 
-//Ë³Ê±Õë
+//é¡ºæ—¶é’ˆ
 static void clockwise(char *cArr, int n)
 {
 	for(int i=0; i<n; ++i)
@@ -67,9 +67,9 @@ static void clockwise(char *cArr, int n)
 			swap(&cArr[n*i+j], &cArr[n*(n-1-i)+j]);
 }
 
-//¿ØÖÆÉÏÏÂ
-//mode = 0 : ÏÂ×ª
-//mode = 1 : ÉÏ×ª
+//æ§åˆ¶ä¸Šä¸‹
+//mode = 0 : ä¸‹è½¬
+//mode = 1 : ä¸Šè½¬
 static void UpOrDown(int mode,int pos,mc *m)
 {
 	assert(NULL != m);
@@ -96,10 +96,10 @@ static void UpOrDown(int mode,int pos,mc *m)
 			UpOrDown(0,pos,m);
 }
 
-//¿ØÖÆ×óÓÒ
-//mode = 0 : ×ó×ª
-//mode = 1 : ÓÒ×ª
-/* Õâ¸öº¯ÊıÒòÓÃ²»µ½¶ø±»É¾³ı
+//æ§åˆ¶å·¦å³
+//mode = 0 : å·¦è½¬
+//mode = 1 : å³è½¬
+/* è¿™ä¸ªå‡½æ•°å› ç”¨ä¸åˆ°è€Œè¢«åˆ é™¤
 void LeftOrRight(int mode, int pos, mc *m)
 {
 	assert(NULL != m);
@@ -129,7 +129,7 @@ void LeftOrRight(int mode, int pos, mc *m)
 }
 */
 
-//µ¹ÖÃÊı×é
+//å€’ç½®æ•°ç»„
 static void ContraryArr(char *cArr, int len)
 {
 	for(int i=0;i<len/2;i++)
@@ -140,7 +140,7 @@ static void ContraryArr(char *cArr, int len)
 	}
 }
 
-//¿ØÖÆÅÔ±ß
+//æ§åˆ¶æ—è¾¹
 static void MCRound(int mode, int pos, mc *m)
 {
 	assert(NULL != m);
@@ -148,10 +148,10 @@ static void MCRound(int mode, int pos, mc *m)
 	char RBox[m->order+2][m->order+2];
 	memset(RBox,0,sizeof RBox);
 
-	/* ÕâÊÇÒ»¸öÌØÊâÇé¿ö,RºĞĞı×ªĞèÒªÊ¹ÓÃ¿éÎ»ÒÆ */
+	/* è¿™æ˜¯ä¸€ä¸ªç‰¹æ®Šæƒ…å†µ,Rç›’æ—‹è½¬éœ€è¦ä½¿ç”¨å—ä½ç§» */
 	if(3 == mode || 4 == mode)
 	{
-		//¶ÁÈ¡
+		//è¯»å–
 		for(int i=0;i<m->order;i++)
 		{
 			for(int j=0;j<3;j++)
@@ -162,7 +162,7 @@ static void MCRound(int mode, int pos, mc *m)
 		char cRBox[m->order][m->order];
 		memset(cRBox,0,sizeof cRBox);
 
-		//Î»ÒÆ
+		//ä½ç§»
 		for(int n=0;n<3;n++)
 		{
 			for(int i=0;i<3;i++)
@@ -172,49 +172,49 @@ static void MCRound(int mode, int pos, mc *m)
 				cRBox[3][j] = RBox[0][j];
 			ContraryArr(cRBox[3],m->order);
 			ContraryArr(cRBox[2],m->order);
-			if(3 == mode)break;			//Èç¹ûmodeÊÇ3ÄÇÃ´ÎŞĞè¸üĞÂRºĞ¿ÉÒÔÖ±½ÓÍË³öÑ­»·
+			if(3 == mode)break;			//å¦‚æœmodeæ˜¯3é‚£ä¹ˆæ— éœ€æ›´æ–°Rç›’å¯ä»¥ç›´æ¥é€€å‡ºå¾ªç¯
 
-			//¸üĞÂRºĞ
+			//æ›´æ–°Rç›’
 			for(int i=0;i<4;i++)
 				for(int j=0;j<m->order;j++)
 					RBox[i][j] = cRBox[i][j];
 		}
 
-		//Ğ´Èë
+		//å†™å…¥
 		for(int i=0;i<m->order;i++)
 		{
 			for(int j=0;j<3;j++)
 				m->box[j+1][m->order*(m->order-pos)+i] = cRBox[j][i];
 			m->box[5][m->order*(pos-1)+i] = cRBox[3][i];
 		}
-		return;		//ÌØÊâÇé¿ö½áÊø
+		return;		//ç‰¹æ®Šæƒ…å†µç»“æŸ
 	}
 
-	/* ÒÔÏÂÊÇÒ»°ãÇé¿ö,RºĞĞı×ª¿ÉÒÔÖ±½ÓÌ×ÓÃË³ÄæÊ± */
+	/* ä»¥ä¸‹æ˜¯ä¸€èˆ¬æƒ…å†µ,Rç›’æ—‹è½¬å¯ä»¥ç›´æ¥å¥—ç”¨é¡ºé€†æ—¶ */
 
 	void (*round)(char*, int);
 	if(0 == mode)round = clockwise;
 	if(1 == mode)round = anticlockwise;
 
-	//¶ÁÈ¡
+	//è¯»å–
 	for(int i=0;i<m->order;i++)
 	{
-		RBox[0][i+1] = m->box[0][m->order*(m->order-pos)+i];			//ÉÏ
-		RBox[m->order+1][i+1] = m->box[4][(m->order)*(pos-1)+i];		//ÏÂ
-		RBox[i+1][0] = m->box[1][i*m->order+m->order-pos];				//×ó
-		RBox[i+1][m->order+1] = m->box[3][i*m->order+pos-1];			//ÓÒ
+		RBox[0][i+1] = m->box[0][m->order*(m->order-pos)+i];			//ä¸Š
+		RBox[m->order+1][i+1] = m->box[4][(m->order)*(pos-1)+i];		//ä¸‹
+		RBox[i+1][0] = m->box[1][i*m->order+m->order-pos];			//å·¦
+		RBox[i+1][m->order+1] = m->box[3][i*m->order+pos-1];			//å³
 	}
 
-	//Ğı×ª
+	//æ—‹è½¬
 	round((char*)RBox,m->order+2);
 
-	//Ğ´Èë
+	//å†™å…¥
 	for(int i=0;i<m->order;i++)
 	{
-		m->box[0][m->order*(m->order-pos)+i] = RBox[0][i+1];			//ÉÏ
-		m->box[4][(m->order)*(pos-1)+i] = RBox[m->order+1][i+1];		//ÏÂ
-		m->box[1][i*m->order+m->order-pos] = RBox[i+1][0];				//×ó
-		m->box[3][i*m->order+pos-1] = RBox[i+1][m->order+1];			//ÓÒ
+		m->box[0][m->order*(m->order-pos)+i] = RBox[0][i+1];			//ä¸Š
+		m->box[4][(m->order)*(pos-1)+i] = RBox[m->order+1][i+1];		//ä¸‹
+		m->box[1][i*m->order+m->order-pos] = RBox[i+1][0];			//å·¦
+		m->box[3][i*m->order+pos-1] = RBox[i+1][m->order+1];			//å³
 	}
 }
 
@@ -251,19 +251,19 @@ void EdgeChange(int index, int mode, mc *m)
 	}
 }
 
-//index ±íÊ¾Ñ¡ÖĞµÄÃæ
+//index è¡¨ç¤ºé€‰ä¸­çš„é¢
 //
-//dirmode = 0: ±íÊ¾ºáÏòĞı×ª
-//dirmode = 1: ±íÊ¾ÊúÏòĞı×ª
+//dirmode = 0: è¡¨ç¤ºæ¨ªå‘æ—‹è½¬
+//dirmode = 1: è¡¨ç¤ºç«–å‘æ—‹è½¬
 //
-//mode = 0: ±íÊ¾ÏòÉÏ»òÏòÓÒĞı×ª
-//mode = 1: ±íÊ¾ÏòÏÂ»òÏò×óĞı×ª
+//mode = 0: è¡¨ç¤ºå‘ä¸Šæˆ–å‘å³æ—‹è½¬
+//mode = 1: è¡¨ç¤ºå‘ä¸‹æˆ–å‘å·¦æ—‹è½¬
 //
-//pos ±íÊ¾´Ó×óÉÏ½Ç¿ªÊ¼Ïò×ó»òÓÒÊıµÄÊı
+//pos è¡¨ç¤ºä»å·¦ä¸Šè§’å¼€å§‹å‘å·¦æˆ–å³æ•°çš„æ•°
 //
-//m ±íÊ¾×¼±¸¸ü¸ÄµÄ½á¹¹Ìå
+//m è¡¨ç¤ºå‡†å¤‡æ›´æ”¹çš„ç»“æ„ä½“
 //
-//È¡Öµ·¶Î§:
+//å–å€¼èŒƒå›´:
 //index: 1-6
 //dirmode: 0-1
 //mode: 0-1
@@ -275,17 +275,17 @@ void MidChange(int index, int dirmode, int mode, int pos, mc *m)
 	switch(index)
 	{
 		case 1:
-		case 5:	//Ãæ1ºÍÃæ5Ö´ĞĞÆğÀ´Ğ§¹ûÒ»ÖÂ
+		case 5:	//é¢1å’Œé¢5æ‰§è¡Œèµ·æ¥æ•ˆæœä¸€è‡´
 			if(0 == dirmode) MCRound(1-mode, pos, m);
 			if(1 == dirmode) UpOrDown(mode, pos-1, m);
 			break;
 		case 2:
-		case 4:	//Ãæ2ºÍÃæ4Ö´ĞĞÆğÀ´Ğ§¹ûÒ»ÖÂ
+		case 4:	//é¢2å’Œé¢4æ‰§è¡Œèµ·æ¥æ•ˆæœä¸€è‡´
 			if(0 == dirmode) MCRound(4-mode, pos, m);
 			if(1 == dirmode) MCRound(1-mode, pos, m);
 			break;
 		case 3:
-		case 6:	//Ãæ3ºÍÃæ6Ö´ĞĞÆğÀ´Ğ§¹ûÒ»ÖÂ
+		case 6:	//é¢3å’Œé¢6æ‰§è¡Œèµ·æ¥æ•ˆæœä¸€è‡´
 			if(0 == dirmode) MCRound(4-mode, pos, m);
 			if(1 == dirmode) UpOrDown(mode, pos-1, m);
 			break;
